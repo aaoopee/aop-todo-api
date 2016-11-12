@@ -47,15 +47,18 @@ app.get('/todos', function(req, resp) {
 		});
 	}
 
-	console.log(queryParams);
+	if (queryParams.hasOwnProperty('q') &&
+		queryParams.q.length >0 ) {
 
+		filteredTodos = _.filter(filteredTodos, function(obj) {
+			return obj.description.indexOf(queryParams.q) > -1;
+		});
+	}
 	resp.json(filteredTodos);
 });
 
 app.get('/todos/:id', function(req, resp) {
 	var matchedTodo = _.findWhere(todos, {id: parseInt(req.params.id)});
-
-	console.log(req.params.id);
 
 	if (matchedTodo) {
 		resp.json(matchedTodo);
