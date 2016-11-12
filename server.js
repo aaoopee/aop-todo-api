@@ -3,29 +3,27 @@ var bodyParser = require('body-parser');
 
 var app = express();
 var PORT = process.env.PORT || 3000;
-var todoNextId = 1;
+var todoNextId = 4;
 
 app.use(bodyParser.json());
 
-var todos = [];
+var todos = [{
+	id: 1,
+	description: 'Meet mom for lunch.',
+	completed: false
 
-// {
-// 	id: 1,
-// 	description: 'Meet mom for lunch.',
-// 	completed: false
-
-// },
-// {
-// 	id: 2,
-// 	description: 'Go to markent.',
-// 	completed: false
-// },
-// {
-// 	id: 3,
-// 	description: 'Do something locally.',
-// 	completed: true
-// }
-// ];
+},
+{
+	id: 2,
+	description: 'Go to markent.',
+	completed: false
+},
+{
+	id: 3,
+	description: 'Do something locally.',
+	completed: true
+}
+];
 
 app.get('/', function(req, resp) {
 	resp.send('TODO.API root')
