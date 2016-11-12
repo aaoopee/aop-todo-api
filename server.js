@@ -1,25 +1,31 @@
 var express = require('express');
+var bodyParser = require('body-parser');
 
 var app = express();
 var PORT = process.env.PORT || 3000;
+var todoNextId = 1;
 
-var todos = [{
-	id: 1,
-	description: 'Meet mom for lunch.',
-	completed: false
+app.use(bodyParser.json());
 
-},
-{
-	id: 2,
-	description: 'Go to markent.',
-	completed: false
-},
-{
-	id: 3,
-	description: 'Do something.',
-	completed: true
-}
-];
+var todos = [];
+
+// {
+// 	id: 1,
+// 	description: 'Meet mom for lunch.',
+// 	completed: false
+
+// },
+// {
+// 	id: 2,
+// 	description: 'Go to markent.',
+// 	completed: false
+// },
+// {
+// 	id: 3,
+// 	description: 'Do something locally.',
+// 	completed: true
+// }
+// ];
 
 app.get('/', function(req, resp) {
 	resp.send('TODO.API root')
@@ -41,6 +47,16 @@ app.get('/todos/:id', function(req, resp) {
 	}
 
 	resp.status(404).send('Did not find todo with id of '+req.params.id+'.');
+});
+
+// POST /todos
+app.post('/todos', function(req, resp) {
+	var body = req.body;
+
+	body.id = todoNextId++;
+	todos.push(body);
+
+	resp.json(body);
 });
 
 
