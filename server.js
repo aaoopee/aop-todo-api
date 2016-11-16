@@ -12,7 +12,6 @@ var todos = [{
 	id: 1,
 	description: 'Meet mom for lunch.',
 	completed: false
-
 },
 {
 	id: 2,
@@ -23,6 +22,11 @@ var todos = [{
 	id: 3,
 	description: 'Do something locally.',
 	completed: true
+},
+{
+	id: 4,
+	description: 'Do something new.',
+	completed:
 }
 ];
 
