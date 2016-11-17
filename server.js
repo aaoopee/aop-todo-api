@@ -26,7 +26,7 @@ var todos = [{
 {
 	id: 4,
 	description: 'Do something new.',
-	completed:
+	completed: false
 }
 ];
 
