@@ -10,57 +10,33 @@ var todoNextId = 4;
 
 app.use(bodyParser.json());
 
-var todos = [{
-	id: 1,
-	description: 'Meet mom for lunch.',
-	completed: false
-},
-{
-	id: 2,
-	description: 'Go to markent.',
-	completed: false
-},
-{
-	id: 3,
-	description: 'Do something locally.',
-	completed: true
-},
-{
-	id: 4,
-	description: 'Do something new.',
-	completed: false
-}
-];
-
 app.get('/', function(req, resp) {
 	resp.send('TODO.API root')
 });
 
 
-app.get('/todos', function(req, resp) {
-	var queryParams = req.query;
-	var filteredTodos = todos;
+app.get('/todos', function(req, res) {
+	var query = req.query;
 
-	if (queryParams.hasOwnProperty('completed')) {
-		var value = queryParams.completed == 'true';
+	var where = {};
 
-		filteredTodos = _.filter(todos, function(obj) {
-			if (value) {
-				return obj.completed;
- 			} else {
- 				return !obj.completed;
- 			}
-		});
+	if (query.hasOwnProperty('completed') && query.completed === 'true') {
+		where.completed = true;
+	} else if (query.hasOwnProperty('completed') && query.completed === 'false') {
+		where.completed = false;
 	}
 
-	if (queryParams.hasOwnProperty('q') &&
-		queryParams.q.length >0 ) {
-
-		filteredTodos = _.filter(filteredTodos, function(obj) {
-			return obj.description.indexOf(queryParams.q) > -1;
-		});
+	if (query.hasOwnProperty('q') && query.q.length > 0) {
+		where.description = {
+			$like: '%'+query.q+'%'
+		};
 	}
-	resp.json(filteredTodos);
+
+	db.todo.findAll({where: where}).then(function (todos) {
+		res.json(todos);
+	}, function(e) {
+		res.status(500).send();
+	})
 });
 
 
@@ -122,22 +98,6 @@ app.post('/todos', function(req, res) {
 		res.status(400).json(e);
 
 	});
-
-	//call create on db.todo
-	// respond with 200 and todo
-	// if fails, return error
-	// res.status(400).json(400).send();
-
-	// body.description = body.description.trim();
-	//
-	// if (!_.isBoolean(body.completed) || !_.isString(body.description)) {
-	// 	return resp.status(400).send();
-	// }
-	//
-	// body.id = todoNextId++;
-	// todos.push(body);
-	//
-	// resp.json(body);
 });
 
 db.sequelize.sync().then(function() {
