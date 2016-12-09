@@ -55,15 +55,22 @@ app.get('/todos/:id', function(req, res) {
 	});
 });
 
-app.delete('/todos/:id', function(req, resp) {
-	var matchedTodo = _.findWhere(todos, {id: parseInt(req.params.id)})
+app.delete('/todos/:id', function(req, res) {
+	var todoId = parseInt(req.params.id, 10);
 
-	if (!matchedTodo) {
-		resp.status(404).send('Did not find todo with id of '+req.params.id+'.');
-	} else {
-		todos = _.without(todos, matchedTodo);
-		resp.json(matchedTodo);
-	}
+	db.todo.destroy({
+		where: {
+			id: todoId
+		}
+	}).then(function(rowsDeleted) {
+		if(rowsDeleted === 0) {
+			res.status(404).send();
+		} else {
+			res.status(204).send();
+		}
+	}, function(e) {
+		res.status(500).send();
+	});
 });
 
 app.put('/todos/:id', function(req, resp) {
@@ -95,7 +102,7 @@ app.post('/todos', function(req, res) {
 	db.todo.create(body).then(function(todo) {
 		res.json(todo.toJSON());
 	}, function (e) {
-		res.status(400).json(e);
+		res.status(500).json(e);
 
 	});
 });
